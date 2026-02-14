@@ -10,7 +10,56 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin'], // 🔥 restrict values
     default: 'user'
+  },
+  otp: { type: String },
+otpExpires: { type: Date },
+otp: String,
+otpExpires: Date,
+
+otpRetryCount: {
+  type: Number,
+  default: 0,
+},
+
+lastOtpSentAt: {
+  type: Date,
+},
+
+otpScheduleAt: {
+  type: Date,
+},
+
+otpScheduled: {
+  type: Boolean,
+  default: false,
+},
+refreshToken: {
+  type: String,
+}
+,
+isEmailVerified: {
+  type: Boolean,
+  default: false
+},
+
+emailOtp: String,
+emailOtpExpires: Date,
+addresses: [
+  {
+    fullName: String,
+    phone: String,
+    street: String,
+    city: String,
+    state: String,
+    pincode: String,
+    country: String,
+    isDefault: {
+      type: Boolean,
+      default: false
+    }
   }
+]
+
 
 }, { timestamps: true });
 
