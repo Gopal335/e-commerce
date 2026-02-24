@@ -1,18 +1,34 @@
 import express from 'express';
-import protect from '../middleware/authMiddleware.js';
-import { updateMyProfile, changeMyPassword, forgotPasswordMOtp, addMyAddress, getAddresses, updateMyAddress, deleteMyAddress} from '../src/user/controller.js';
+import authMiddleware from '../middleware/authMiddleware.js';
+import adminMiddleware from '../middleware/adminMiddleware.js';
+
+
+
+import {
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  createUser, 
+  sendUsersReportController
+} from '../src/user/user.controller.js';
 
 const router = express.Router();
 
-router.put('/me', protect, updateMyProfile);
-router.put('/change-password', protect, changeMyPassword);
-router.put('/forgot-password-prev', protect, forgotPasswordMOtp);
+// Protect ALL routes
+router.use(authMiddleware, adminMiddleware);
 
-router.post('/address', protect, addMyAddress);
-router.get('/address', protect, getAddresses);
-router.put('/address/:id', protect, updateMyAddress);
-router.delete('/address/:id', protect, deleteMyAddress);
+router.get('/', getAllUsers);
 
+router.get('/:id', getUserById);
+
+router.put('/:id', updateUser);
+
+router.delete('/:id', deleteUser);
+
+router.post('/', createUser);
+
+router.get("/send-users-report", sendUsersReportController);
 
 
 

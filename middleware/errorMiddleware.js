@@ -1,14 +1,16 @@
+// 404 handler
 export const notFound = (req, res, next) => {
+  const error = new Error(`Not Found - ${req.originalUrl}`);
   res.status(404);
-  next(new Error(`Not Found - ${req.originalUrl}`));
+  next(error);
 };
 
-export const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+// Central error handler
+export const errorMiddleware = (err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
 
   res.status(statusCode).json({
     success: false,
-    message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack
+    message: err.message || "Internal Server Error",
   });
 };

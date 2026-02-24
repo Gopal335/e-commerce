@@ -11,12 +11,8 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Product name is required'],
       trim: true,
-      maxlength: [150, 'Product name cannot exceed 150 characters']
-    },
-
-    slug: {
-      type: String,
-      unique: true
+      maxlength: [150, 'Product name cannot exceed 150 characters'],
+    
     },
 
     description: {
@@ -29,20 +25,26 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Product price is required'],
       min: [0, 'Price cannot be negative']
     },
-
-    discountPrice: {
+     averageRating: {
       type: Number,
-      min: [0, 'Discount price cannot be negative'],
-      validate: {
-        validator: function (value) {
-          return value < this.price;
-        },
-        message: 'Discount price must be less than regular price'
-      }
+      default: 0,
     },
+    discountPercentage: {
+  type: Number,
+  min: [0, "Discount cannot be negative"],
+  max: [100, "Discount cannot exceed 100"],
+  default: 0
+},
+
+discountPrice: {
+  type: Number,
+  min: 0
+},
+
 
     category: {
   type: String,
+  enum: ['skincare', 'accessories', 'electronics', 'clothing', 'shoes'],
   required: true
 },
 
@@ -58,39 +60,24 @@ const productSchema = new mongoose.Schema(
       default: 0
     },
 
-    sold: {
-      type: Number,
-      default: 0
-    },
+    
 
     images: [
-      {
-        type: String
-      }
-    ],
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Image",
+  }
+]
+,
+reviews: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Review",
+  },
+],
 
-    ratings: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5
-    },
-
-    numReviews: {
-      type: Number,
-      default: 0
-    },
-
-    isActive: {
-      type: Boolean,
-      default: true
-    },
-
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    }
+    
+   
   },
   {
     timestamps: true
@@ -120,11 +107,17 @@ productSchema.index({ category: 1 });
 ============================== */
 
 // Generate slug before saving
-productSchema.pre('save', async function () {
-  if (this.isModified('name')) {
-    this.slug = slugify(this.name, { lower: true });
+productSchema.pre("save", function (next) {
+  if (this.discountPercentage > 0) {
+    this.discountPrice =
+      this.price - (this.price * this.discountPercentage) / 100;
+  } else {
+    this.discountPrice = this.price;
   }
+
+  
 });
+
 
 
 

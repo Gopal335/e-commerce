@@ -8,13 +8,12 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: {
     type: String,
-    enum: ['user', 'admin'], // 🔥 restrict values
+    enum: ['user', 'admin'], 
     default: 'user'
   },
   otp: { type: String },
 otpExpires: { type: Date },
-otp: String,
-otpExpires: Date,
+
 
 otpRetryCount: {
   type: Number,
@@ -44,21 +43,7 @@ isEmailVerified: {
 
 emailOtp: String,
 emailOtpExpires: Date,
-addresses: [
-  {
-    fullName: String,
-    phone: String,
-    street: String,
-    city: String,
-    state: String,
-    pincode: String,
-    country: String,
-    isDefault: {
-      type: Boolean,
-      default: false
-    }
-  }
-]
+
 
 
 }, { timestamps: true });

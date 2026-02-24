@@ -5,17 +5,17 @@ dotenv.config();
 
 import connectDB from './config/db.js';
 import rootRouter from './routes/index.js';
-import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import { notFound } from './middleware/errorMiddleware.js';
 import cors from "cors";
 import { otpCronJob } from './src/cron/otpCron.js';
-import errorMiddleware from './src/middleware/errorMiddleware.js';
+import { errorMiddleware } from './middleware/errorMiddleware.js';
 
 connectDB();
 
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5177", 
+  origin: "http://localhost:5003", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
     
@@ -24,7 +24,7 @@ app.use(cors({
 
 app.use(express.json());
 
-otpCronJob();
+// otpCronJob();
 
 app.use('/api', rootRouter);
 
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 });
 
 app.use(notFound);
-app.use(errorHandler);
+
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3000;

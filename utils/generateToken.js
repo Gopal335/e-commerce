@@ -1,12 +1,16 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
-const generateToken = (userId) => {
+// Access Token
+export const generateAccessToken = (userId) => {
   return jwt.sign(
     { id: userId },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN }
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: "7d" }
   );
 };
 
-export default generateToken;
-
+// Refresh Token (raw)
+export const generateRefreshToken = () => {
+  return crypto.randomBytes(64).toString("hex");
+};
