@@ -4,96 +4,40 @@ import {
   updateCartItemService,
   removeFromCartService,
   clearCartService
-} from './cart.service.js';
+} from "./cart.service.js";
 
-import asyncHandler from '../../middleware/asyncHandler.js';
+import asyncHandler from "express-async-handler";
+import { successResponse } from "../../utils/apiResponse.js";
 
 
-/* ======================================
-   GET CART
-====================================== */
 const getCart = asyncHandler(async (req, res) => {
-
-  const cart = await getCartService(req.user._id);
-
-  res.status(200).json({
-    success: true,
-    cart
-  });
-
+  const cart = await getCartService( req.user._id );
+  return successResponse( 200, res, "Cart fetched successfully", cart );
 });
 
 
-/* ======================================
-   ADD ITEM
-====================================== */
 const addToCart = asyncHandler(async (req, res) => {
-
   const { productId, quantity } = req.body;
-
-  const cart = await addToCartService(
-    req.user._id,
-    productId,
-    quantity
-  );
-
-  res.status(200).json({
-    success: true,
-    cart
-  });
-
+  const cart = await addToCartService( req.user._id, productId, quantity );
+  return successResponse( 200, res, "Item added to cart successfully", cart );
 });
 
 
-/* ======================================
-   UPDATE ITEM
-====================================== */
 const updateCartItem = asyncHandler(async (req, res) => {
-
-  const cart = await updateCartItemService(
-    req.user._id,
-    req.params.productId,
-    req.body.quantity
-  );
-
-  res.status(200).json({
-    success: true,
-    cart
-  });
-
+  const cart = await updateCartItemService( req.user._id, req.params.productId, req.body.quantity );
+  return successResponse( 200, res, "Cart item updated successfully", cart );
 });
 
 
-/* ======================================
-   REMOVE ITEM
-====================================== */
 const removeFromCart = asyncHandler(async (req, res) => {
-
-  const cart = await removeFromCartService(
-    req.user._id,
-    req.params.productId
-  );
-
-  res.status(200).json({
-    success: true,
-    cart
-  });
-
+  const cart = await removeFromCartService( req.user._id, req.params.productId );
+  return successResponse( 200, res, "Item removed from cart successfully", cart );
 });
 
 
-/* ======================================
-   CLEAR CART
-====================================== */
 const clearCart = asyncHandler(async (req, res) => {
-
-  const cart = await clearCartService(req.user._id);
-
-  res.status(200).json({
-    success: true,
-    cart
-  });
-
+  const cart = await clearCartService( req.user._id );
+  return successResponse( 200, res, "Cart cleared successfully", cart );
 });
 
 

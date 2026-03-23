@@ -7,8 +7,8 @@ const orderItemSchema = new mongoose.Schema(
       ref: 'Product',
       required: true
     },
-    name: String,      
-    price: Number,     
+    name: String,
+    price: Number,
     quantity: Number,
     image: String
   },
@@ -42,25 +42,40 @@ const orderSchema = new mongoose.Schema(
       required: true
     },
 
+    
     status: {
       type: String,
       enum: [
         'Pending',
-        'Paid',
+        'Processing',
         'Shipped',
         'Delivered',
-        'Cancelled',
-        'Refunded'
+        'Cancelled'
       ],
       default: 'Pending'
     },
 
-    isPaid: {
-      type: Boolean,
-      default: false
-    },
+   
+    payment: {
+      method: {
+        type: String,
+        enum: ['COD', 'UPI', 'Card', 'NetBanking', 'Other'],
+        required: true
+      },
 
-    paidAt: Date
+      status: {
+        type: String,
+        enum: ['Pending', 'Paid', 'Failed', 'Refunded'],
+        default: 'Pending'
+      },
+
+      transactionId: {
+        type: String
+      },
+
+      paidAt: Date
+    }
+
   },
   { timestamps: true }
 );

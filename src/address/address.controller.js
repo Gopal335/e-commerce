@@ -5,67 +5,32 @@ import {
   deleteAddressService
 } from "./address.service.js";
 
-import asyncHandler from '../../middleware/asyncHandler.js';
+import asyncHandler from "express-async-handler";
+import { successResponse } from "../../utils/apiResponse.js"; 
 
-/* ======================================
-   ADD ADDRESS
-====================================== */
-export const addAddress = asyncHandler(async (req, res) => {
-  const address = await addAddressService(
-    req.user._id,
-    req.body
-  );
+ const addAddress = asyncHandler(async (req, res) => {
+  const address = await addAddressService( req.user._id, req.body ); 
+  return successResponse( 201, res, "Address added successfully", address );
+}); 
 
-  res.status(201).json({
-    success: true,
-    address,
-  });
+ const getMyAddresses = asyncHandler(async (req, res) => {
+   const addresses = await getAddressesService( req.user._id );
+   return successResponse( 200, res, "Addresses fetched successfully", addresses ); 
 });
 
-
-/* ======================================
-   GET MY ADDRESSES
-====================================== */
-export const getMyAddresses = asyncHandler(async (req, res) => {
-  const addresses = await getAddressesService(
-    req.user._id
-  );
-
-  res.status(200).json({
-    success: true,
-    addresses,
-  });
+ const updateAddress = asyncHandler(async (req, res) => {
+  const address = await updateAddressService( req.user._id, req.params.id, req.body );
+  return successResponse( 200, res, "Address updated successfully", address );
 });
 
-
-/* ======================================
-   UPDATE ADDRESS
-====================================== */
-export const updateAddress = asyncHandler(async (req, res) => {
-  const address = await updateAddressService(
-    req.user._id,
-    req.params.id,
-    req.body
-  );
-
-  res.status(200).json({
-    success: true,
-    address,
-  });
+ const deleteAddress = asyncHandler(async (req, res) => {
+   await deleteAddressService( req.user._id, req.params.id );
+   return successResponse( 200, res, "Address deleted successfully", null );
 });
 
-
-/* ======================================
-   DELETE ADDRESS
-====================================== */
-export const deleteAddress = asyncHandler(async (req, res) => {
-  await deleteAddressService(
-    req.user._id,
-    req.params.id
-  );
-
-  res.status(200).json({
-    success: true,
-    message: "Address deleted successfully",
-  });
-});
+export {
+  addAddress,
+  getMyAddresses,
+  updateAddress,
+  deleteAddress
+};

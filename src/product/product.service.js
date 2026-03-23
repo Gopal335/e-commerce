@@ -1,16 +1,13 @@
-import Product from '../../models/Product.js';
+import Product from "../../models/Product.js";
 import {
   NotFoundError,
   BadRequestError
-} from '../../utils/appError.js';
-import Image from '../../models/image.js';
-import Review from '../../models/review.model.js';
+} from "../../utils/appError.js";
+import Image from "../../models/image.js";
 import mongoose from "mongoose";
-/* ======================================
-   GET ALL PRODUCTS
-====================================== */
 
-export const getAllProductsService = async (queryParams) => {
+ const getAllProductsService = async (queryParams) => {
+
   const {
     category,
     minPrice,
@@ -51,7 +48,6 @@ export const getAllProductsService = async (queryParams) => {
 
   const result = await Product.aggregate([
     { $match: matchStage },
-
     {
       $lookup: {
         from: "images",
@@ -60,14 +56,12 @@ export const getAllProductsService = async (queryParams) => {
         as: "images",
       },
     },
-
     {
       $project: {
         sold: 0,
         numReviews: 0,
       },
     },
-
     {
       $facet: {
         metadata: [{ $count: "total" }],
@@ -84,24 +78,21 @@ export const getAllProductsService = async (queryParams) => {
     total: result[0].metadata[0]?.total || 0,
     products: result[0].data,
   };
+
 };
 
 
-/* ======================================
-   GET PRODUCT BY ID
-====================================== */
 
 
 
-export const getProductByIdService = async (id) => {
+ const getProductByIdService = async (id) => {
+
   const result = await Product.aggregate([
     {
       $match: {
         _id: new mongoose.Types.ObjectId(id),
       },
     },
-
-    // Images lookup
     {
       $lookup: {
         from: "images",
@@ -110,7 +101,6 @@ export const getProductByIdService = async (id) => {
         as: "images",
       },
     },
-
     {
       $addFields: {
         images: {
@@ -122,8 +112,6 @@ export const getProductByIdService = async (id) => {
         },
       },
     },
-
-    // Reviews lookup (ONLY 1)
     {
       $lookup: {
         from: "reviews",
@@ -134,9 +122,8 @@ export const getProductByIdService = async (id) => {
               $expr: { $eq: ["$product", "$$productId"] },
             },
           },
-          { $sort: { createdAt: -1 } }, // latest first
+          { $sort: { createdAt: -1 } },
           { $limit: 1 },
-
           {
             $lookup: {
               from: "users",
@@ -146,7 +133,6 @@ export const getProductByIdService = async (id) => {
             },
           },
           { $unwind: "$user" },
-
           {
             $project: {
               rating: 1,
@@ -159,7 +145,6 @@ export const getProductByIdService = async (id) => {
         as: "reviews",
       },
     },
-
     {
       $project: {
         sold: 0,
@@ -174,14 +159,14 @@ export const getProductByIdService = async (id) => {
   }
 
   return result[0];
+
 };
 
 
-/* ======================================
-   CREATE PRODUCT
-====================================== */
 
-export const createProductService = async (adminId, data, files) => {
+
+
+ const createProductService = async (adminId, data, files) => {
 
   if (!data.name || !data.price) {
     throw new BadRequestError("Name and price are required");
@@ -195,28 +180,27 @@ export const createProductService = async (adminId, data, files) => {
   if (files && files.length > 0) {
 
     const imageDocs = await Promise.all(files.map(file =>
-        Image.create({
-          url: file.path,
-          public_id: file.filename,
-          product: product._id,
-          uploadedBy: adminId,
-        })
-      ));
+      Image.create({
+        url: file.path,
+        public_id: file.filename,
+        product: product._id,
+        uploadedBy: adminId,
+      })
+    ));
 
     product.images = imageDocs.map(img => img._id);
     await product.save();
   }
 
   return product;
+
 };
 
 
 
-/* ======================================
-   UPDATE PRODUCT
-====================================== */
 
-export const updateProductService = async (id, updateData) => {
+
+ const updateProductService = async (id, updateData) => {
 
   if (updateData.price || updateData.discountPercentage) {
 
@@ -227,11 +211,9 @@ export const updateProductService = async (id, updateData) => {
     }
 
     const price = updateData.price ?? product.price;
-    const discountPercentage =
-      updateData.discountPercentage ?? product.discountPercentage;
+    const discountPercentage = updateData.discountPercentage ?? product.discountPercentage;
 
-    updateData.discountPrice =
-      price - (price * discountPercentage) / 100;
+    updateData.discountPrice = price - (price * discountPercentage) / 100;
   }
 
   const updatedProduct = await Product.findByIdAndUpdate(
@@ -241,14 +223,14 @@ export const updateProductService = async (id, updateData) => {
   );
 
   return updatedProduct;
+
 };
 
 
-/* ======================================
-   DELETE PRODUCT (Soft Delete)
-====================================== */
 
-export const deleteProductService = async (id) => {
+
+
+ const deleteProductService = async (id) => {
 
   const product = await Product.findById(id);
 
@@ -256,10 +238,16 @@ export const deleteProductService = async (id) => {
     throw new NotFoundError("Product not found");
   }
 
-  
   await product.deleteOne();
 
   return true;
+
 };
 
-
+export {
+  getAllProductsService,
+  getProductByIdService,
+  createProductService,
+  updateProductService,
+  deleteProductService
+};

@@ -48,7 +48,7 @@ emailOtpExpires: Date,
 
 }, { timestamps: true });
 
-// Attach the external middleware logic
+
 userSchema.pre('save', hashPasswordMiddleware);
 
 export default mongoose.model('User', userSchema);

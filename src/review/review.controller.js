@@ -1,4 +1,6 @@
-import asyncHandler from "../../middleware/asyncHandler.js";
+import asyncHandler from "express-async-handler";
+import { successResponse } from "../../utils/apiResponse.js";
+
 import {
   createReviewService,
   updateReviewService,
@@ -7,77 +9,37 @@ import {
   getAllReviewsService,
 } from "./review.service.js";
 
-/* =========================
-   CREATE REVIEW
-========================= */
-
-export const createReview = asyncHandler(async (req, res) => {
-  const review = await createReviewService(
-    req.user._id,
-    req.params.productId,
-    req.body.rating,
-    req.body.comment
-  );
-
-  res.status(201).json({
-    success: true,
-    review,
-  });
+ const createReview = asyncHandler(async (req, res) => {
+  const review = await createReviewService( req.user._id, req.params.productId, req.body.rating, req.body.comment );
+  return successResponse( 201, res, "Review created successfully", review );
 });
 
-/* =========================
-   UPDATE REVIEW
-========================= */
 
-export const updateReview = asyncHandler(async (req, res) => {
-  const review = await updateReviewService(
-    req.user._id,
-    req.params.reviewId,
-    req.body.rating,
-    req.body.comment
-  );
-
-  res.status(200).json({
-    success: true,
-    review,
-  });
+ const updateReview = asyncHandler(async (req, res) => {
+  const review = await updateReviewService( req.user._id, req.params.reviewId, req.body.rating, req.body.comment );
+  return successResponse( 200, res, "Review updated successfully", review );
 });
 
-/* =========================
-   DELETE REVIEW (Admin)
-========================= */
-
-export const deleteReview = asyncHandler(async (req, res) => {
-  await deleteReviewService(req.params.reviewId);
-
-  res.status(200).json({
-    success: true,
-    message: "Review deleted",
-  });
+ const deleteReview = asyncHandler(async (req, res) => {
+  await deleteReviewService( req.params.reviewId );
+  return successResponse( 200, res, "Review deleted successfully", null );
 });
 
-/* =========================
-   GET PRODUCT REVIEWS
-========================= */
-
-export const getProductReviews = asyncHandler(async (req, res) => {
-  const reviews = await getProductReviewsService(req.params.productId);
-
-  res.status(200).json({
-    success: true,
-    reviews,
-  });
+ const getProductReviews = asyncHandler(async (req, res) => {
+  const reviews = await getProductReviewsService( req.params.productId );
+  return successResponse( 200, res, "Product reviews fetched successfully", reviews );
 });
 
-/* =========================
-   ADMIN GET ALL REVIEWS
-========================= */
 
-export const getAllReviews = asyncHandler(async (req, res) => {
+ const getAllReviews = asyncHandler(async (req, res) => {
   const reviews = await getAllReviewsService();
-
-  res.status(200).json({
-    success: true,
-    reviews,
-  });
+  return successResponse( 200, res, "All reviews fetched successfully", reviews );
 });
+
+export {
+  createReview,
+  updateReview,
+  deleteReview,
+  getProductReviews,
+  getAllReviews,
+};

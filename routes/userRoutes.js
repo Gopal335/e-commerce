@@ -15,7 +15,7 @@ import {
 
 const router = express.Router();
 
-// Protect ALL routes
+
 router.use(authMiddleware, adminMiddleware);
 
 router.get('/', getAllUsers);

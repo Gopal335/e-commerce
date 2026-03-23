@@ -29,10 +29,10 @@ const reviewSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Prevent duplicate review per user per product
+
 reviewSchema.index({ user: 1, product: 1 }, { unique: true });
 
-// Important index for performance
+
 reviewSchema.index({ product: 1 });
 
 export default mongoose.model("Review", reviewSchema);

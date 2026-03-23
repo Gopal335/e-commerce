@@ -10,7 +10,7 @@ import reviewRoutes from './reviewRoutes.js'
 
 const router = express.Router();
 
-// Mounts authRoutes directly so they hit /api/signup and /api/signin
+
 router.use('/auth', authRoutes);
 // router.use('/admin', adminRoutes);
 router.use('/users', userRoutes);

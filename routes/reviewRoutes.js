@@ -11,14 +11,11 @@ import {
 
 const router = express.Router();
 
-/* PUBLIC */
 router.get("/:productId", getProductReviews);
 
-/* USER */
 router.post("/:productId", protect, createReview);
 router.put("/:reviewId", protect, updateReview);
 
-/* ADMIN */
 router.get("/", protect, restrictTo("admin"), getAllReviews);
 router.delete("/:reviewId", protect, restrictTo("admin"), deleteReview);
 

@@ -1,5 +1,4 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+
 
  const restrictTo = (...roles) => {
   return (req, res, next) => {

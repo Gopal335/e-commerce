@@ -4,96 +4,37 @@ import {
   getOrderByIdService,
   getAllOrdersService,
   updateOrderStatusService
-} from './order.service.js';
+} from "./order.service.js";
 
-import { BadRequestError } from '../../utils/appError.js';
-import asyncHandler from '../../middleware/asyncHandler.js';
+import asyncHandler from "express-async-handler";
+import { successResponse } from "../../utils/apiResponse.js";
 
 
-/* ======================================
-   CREATE ORDER
-====================================== */
 const createOrder = asyncHandler(async (req, res) => {
-
-  const { addressId, address } = req.body;
-
-  const order = await createOrderService(
-    req.user._id,
-    { addressId, address }
-  );
-
-  res.status(201).json({
-    success: true,
-    data: order
-  });
-
+  const { addressId, address, payment } = req.body;
+  const order = await createOrderService( req.user._id, { addressId, address, payment } );
+  return successResponse( 201, res, "Order created successfully", order );
 });
 
-/* ======================================
-   GET MY ORDERS
-====================================== */
 const getMyOrders = asyncHandler(async (req, res) => {
-
-  const orders = await getMyOrdersService(req.user._id);
-
-  res.status(200).json({
-    success: true,
-    data: orders
-  });
-
+  const orders = await getMyOrdersService( req.user._id );
+  return successResponse( 200, res, "Orders fetched successfully", orders );
 });
 
-
-/* ======================================
-   GET ORDER BY ID
-====================================== */
 const getOrderById = asyncHandler(async (req, res) => {
-
-  const order = await getOrderByIdService(
-    req.user._id,
-    req.params.id
-  );
-
-  res.status(200).json({
-    success: true,
-    data: order
-  });
-
+  const order = await getOrderByIdService( req.user._id, req.params.id );
+  return successResponse( 200, res, "Order fetched successfully", order );
 });
 
-
-/* ======================================
-   GET ALL ORDERS
-====================================== */
 const getAllOrders = asyncHandler(async (req, res) => {
-
   const orders = await getAllOrdersService();
-
-  res.status(200).json({
-    success: true,
-    data: orders
-  });
-
+  return successResponse( 200, res, "All orders fetched successfully", orders );
 });
 
-
-/* ======================================
-   UPDATE ORDER STATUS
-====================================== */
 const updateOrderStatus = asyncHandler(async (req, res) => {
-
-  const order = await updateOrderStatusService(
-    req.params.id,
-    req.body.status
-  );
-
-  res.status(200).json({
-    success: true,
-    data: order
-  });
-
+  const order = await updateOrderStatusService( req.params.id, req.body.status );
+  return successResponse( 200, res, "Order status updated successfully", order );
 });
-
 
 export {
   createOrder,
