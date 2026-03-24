@@ -32,11 +32,6 @@ jobs:
           sleep 5
           echo "Server started successfully"
 
-      - name: Create .env file
-        run: |
-          echo "PORT=${{ secrets.PORT }}" >> .env
-          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
-
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
