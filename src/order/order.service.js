@@ -9,7 +9,7 @@ import {
   BadRequestError,
   NotFoundError,
   ForbiddenError
-} from "../../utils/appError.js";
+} from "../utils/appError.js";
 
  const createOrderService = async (userId, orderData) => {
   const { addressId, address, payment } = orderData;

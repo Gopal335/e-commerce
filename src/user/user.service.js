@@ -8,7 +8,7 @@ import {
   NotFoundError,
   BadRequestError,
   ForbiddenError
-} from "../../utils/appError.js";
+} from "../utils/appError.js";
 
 
 const fetchAllUsers = async () => {

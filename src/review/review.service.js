@@ -1,7 +1,7 @@
 import Review from "../../models/review.model.js";
 import Product from "../../models/Product.js";
 import Order from "../../models/order.js";
-import { NotFoundError, BadRequestError } from "../../utils/appError.js";
+import { NotFoundError, BadRequestError } from "../utils/appError.js";
 import mongoose from "mongoose";
 
 const updateProductAverage = async (productId) => {

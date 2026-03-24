@@ -1,5 +1,5 @@
 import Address from "../../models/address.model.js";
-import { NotFoundError } from "../../utils/appError.js";
+import { NotFoundError } from "../utils/appError.js";
 
 const addAddressService = async (userId, addressData) => {
   if (addressData.isDefault) {

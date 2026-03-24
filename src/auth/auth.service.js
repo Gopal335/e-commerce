@@ -12,7 +12,7 @@ import {
   UnauthorizedError,
   NotFoundError,
   ForbiddenError
-} from "../../utils/appError.js";
+} from "../utils/appError.js";
 
 const registerUser = async (name, email, password, phone) => {
   if (!name || !email || !password) {
